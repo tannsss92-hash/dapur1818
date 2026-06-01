@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Dapur 1818 - Tempat makan keluarga modern di Cileunyi Wetan, Kabupaten Bandung. Rating 5.0, suasana bersih dan nyaman, buka setiap hari hingga 23.00."/>
+  <title>Dapur 1818 — Tempat Makan Nyaman untuk Setiap Momen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:    #1E3A5F;
+      --navy2:   #152d4a;
+      --navy3:   #0d1f35;
+      --gold:    #D4A017;
+      --gold2:   #E8B520;
+      --white:   #FFFFFF;
+      --lightbg: #F5F7FA;
+      --dark:    #374151;
+      --muted:   #6B7280;
+      --light:   #E5E9F0;
+      --grad:    linear-gradient(135deg, #1E3A5F 0%, #2d5285 100%);
+      --grad-gold: linear-gradient(135deg, #D4A017 0%, #E8B520 100%);
+      --glass:   rgba(255,255,255,0.08);
+      --glass-border: rgba(255,255,255,0.12);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark); overflow-x: hidden; }
+
+    /* LOADER */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--navy3);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px;
+      transition: opacity .6s, visibility .6s;
+    }
+    #loader.hide { opacity: 0; visibility: hidden; }
+    .l-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem; font-weight: 700; color: var(--gold);
+      letter-spacing: 6px; animation: lPulse 1.5s ease-in-out infinite;
+    }
+    @keyframes lPulse { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.6;transform:scale(.97);} }
+    .l-text { font-size: .7rem; color: rgba(255,255,255,.3); letter-spacing: .25em; text-transform: uppercase; }
+    .l-bar { width: 160px; height: 2px; background: rgba(255,255,255,.08); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+    .l-fill { height: 100%; width: 0; background: var(--grad-gold); animation: lf 1.8s ease forwards; }
+    @keyframes lf { to { width: 100%; } }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 20px 6vw; display: flex; justify-content: space-between; align-items: center;
+      transition: background .35s, box-shadow .35s, padding .3s;
+    }
+    nav.scrolled {
+      background: rgba(14,29,50,.96); backdrop-filter: blur(16px);
+      box-shadow: 0 1px 0 rgba(212,160,23,.15), 0 4px 20px rgba(0,0,0,.3);
+      padding: 14px 6vw;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--white); text-decoration: none;
+      display: flex; align-items: center; gap: 10px; letter-spacing: 1px;
+    }
+    .nav-logo-badge {
+      width: 32px; height: 32px; border-radius: 6px;
+      background: var(--grad-gold); display: flex; align-items: center; justify-content: center;
+      font-size: .7rem; font-weight: 700; color: var(--navy3); letter-spacing: 0; font-family: 'DM Sans', sans-serif;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: .83rem; font-weight: 500; color: rgba(255,255,255,.65); text-decoration: none; transition: color .2s; letter-spacing: .02em; }
+    .nav-links a:hover { color: var(--gold2); }
+    .nav-cta {
+      background: var(--grad-gold); color: var(--navy3);
+      padding: 9px 22px; border-radius: 6px;
+      font-size: .82rem; font-weight: 700; text-decoration: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(212,160,23,.35);
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(212,160,23,.45); }
+    .burger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; z-index:600; }
+    .burger span { display:block; height:2px; border-radius:4px; background:#fff; transition:transform .3s,opacity .3s; }
+    .burger span:nth-child(1){ width:24px; }.burger span:nth-child(2){ width:18px; }.burger span:nth-child(3){ width:24px; }
+    .burger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }.burger.open span:nth-child(2){ opacity:0; }.burger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+    .mm { display:none; position:fixed; inset:0; z-index:490; background:rgba(14,29,50,.98); backdrop-filter:blur(16px); flex-direction:column; align-items:center; justify-content:center; gap:2rem; opacity:0; pointer-events:none; transition:opacity .3s; }
+    .mm.open { display:flex; opacity:1; pointer-events:all; }
+    .mm a { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:700; color:#fff; text-decoration:none; transition:color .2s; letter-spacing:1px; }
+    .mm a:hover { color:var(--gold); }
+    .mm .mm-cta { font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:700; background:var(--grad-gold); color:var(--navy3); padding:13px 36px; border-radius:8px; letter-spacing:.5px; }
+
+    /* HERO */
+    #hero { min-height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(160deg, #060e1a 0%, #0d1f35 30%, #1a1200 60%, #0a1628 100%);
+    }
+    .hero-bg::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse at 65% 40%, rgba(212,160,23,.18) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 70%, rgba(30,58,95,.6) 0%, transparent 50%);
+    }
+    /* Geometric decoration */
+    .hero-deco {
+      position: absolute; border: 1px solid rgba(212,160,23,.1);
+      border-radius: 50%; pointer-events: none;
+    }
+    .hd1 { width: 600px; height: 600px; top: -150px; right: -150px; animation: rotateSlow 30s linear infinite; }
+    .hd2 { width: 400px; height: 400px; bottom: -100px; left: -100px; border-color: rgba(255,255,255,.04); animation: rotateSlow 20s linear infinite reverse; }
+    .hd3 { width: 200px; height: 200px; top: 20%; right: 20%; border-color: rgba(212,160,23,.06); animation: rotateSlow 15s linear infinite; }
+    @keyframes rotateSlow { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+    .hero-inner { position: relative; z-index: 2; text-align: center; padding: 130px 6vw 90px; max-width: 860px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid rgba(212,160,23,.35); background: rgba(212,160,23,.08);
+      color: var(--gold2); padding: 8px 20px; border-radius: 50px;
+      font-size: .74rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      margin-bottom: 2.2rem; animation: fuA .8s ease both;
+      backdrop-filter: blur(8px);
+    }
+    .hbdot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: blk 2s infinite; }
+    @keyframes blk { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+    @keyframes fuA { from{opacity:0;transform:translateY(24px);} to{opacity:1;transform:translateY(0);} }
+    .hero-h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6.5vw, 6rem); font-weight: 700; line-height: 1.1;
+      color: var(--white); margin-bottom: 1.6rem; letter-spacing: -.5px;
+      animation: fuA .8s .15s ease both;
+    }
+    .hero-h1 .acc { color: var(--gold); font-style: italic; }
+    .hero-h1 .acc2 { display: block; }
+    .hero-sub { font-size: clamp(.9rem,1.8vw,1.1rem); font-weight: 300; line-height: 1.85; color: rgba(255,255,255,.6); max-width: 580px; margin: 0 auto 3rem; animation: fuA .8s .3s ease both; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; animation: fuA .8s .45s ease both; }
+    .btn-gold {
+      background: var(--grad-gold); color: var(--navy3);
+      padding: 14px 30px; border-radius: 8px; font-size: .88rem; font-weight: 700; text-decoration: none;
+      box-shadow: 0 8px 24px rgba(212,160,23,.35); transition: transform .2s, box-shadow .2s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 14px 32px rgba(212,160,23,.45); }
+    .btn-wa-hero {
+      background: #25d366; color: #fff;
+      padding: 14px 30px; border-radius: 8px; font-size: .88rem; font-weight: 700; text-decoration: none;
+      box-shadow: 0 8px 24px rgba(37,211,102,.3); transition: transform .2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-wa-hero:hover { transform: translateY(-3px); }
+    .btn-glass-hero {
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2); color: #fff; backdrop-filter: blur(10px);
+      padding: 13px 28px; border-radius: 8px; font-size: .88rem; font-weight: 500; text-decoration: none;
+      transition: background .2s, transform .2s; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-glass-hero:hover { background: rgba(255,255,255,.14); transform: translateY(-3px); }
+    /* Gold divider line */
+    .gold-line { width: 60px; height: 2px; background: var(--grad-gold); margin: 0 auto 1.5rem; border-radius: 2px; }
+
+    /* STATS */
+    .stats-bar { background: var(--navy3); padding: 0; display: flex; }
+    .si { flex: 1; text-align: center; padding: 28px 16px; border-right: 1px solid rgba(255,255,255,.06); }
+    .si:last-child { border-right: none; }
+    .sn { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); line-height: 1; }
+    .sl2 { font-size: .75rem; color: rgba(255,255,255,.4); margin-top: 5px; letter-spacing: .05em; }
+
+    /* SHARED */
+    .sec { padding: 110px 6vw; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+    .eyebrow::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+    .sec-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem,4vw,3.6rem); font-weight: 700; line-height: 1.1; color: var(--navy); margin-bottom: 1rem; letter-spacing: -.3px; }
+    .sec-title .acc { color: var(--gold); font-style: italic; }
+    .sec-sub { font-size: .95rem; color: var(--muted); line-height: 1.8; max-width: 500px; margin-bottom: 3.5rem; font-weight: 400; }
+
+    /* ABOUT */
+    #about { background: var(--white); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7vw; align-items: center; }
+    .about-vis {
+      background: var(--navy); border-radius: 20px; padding: 56px 48px;
+      position: relative; overflow: hidden;
+    }
+    .about-vis::before { content: ''; position: absolute; width: 300px; height: 300px; border-radius: 50%; border: 1px solid rgba(212,160,23,.15); bottom: -100px; right: -100px; }
+    .about-vis::after { content: ''; position: absolute; width: 180px; height: 180px; border-radius: 50%; border: 1px solid rgba(212,160,23,.08); top: -50px; left: -50px; }
+    .about-big { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem,3.5vw,3rem); font-weight: 700; color: #fff; line-height: 1.15; position: relative; z-index: 1; margin-bottom: 28px; letter-spacing: -.3px; }
+    .about-big em { font-style: italic; color: var(--gold); }
+    .about-rating { display: flex; align-items: center; gap: 14px; background: rgba(212,160,23,.1); border: 1px solid rgba(212,160,23,.2); border-radius: 12px; padding: 16px 20px; position: relative; z-index: 1; margin-bottom: 14px; }
+    .rnum { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700; color: var(--gold); }
+    .rlbl { font-size: .78rem; color: rgba(255,255,255,.55); }
+    .about-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 50px; padding: 8px 14px; font-size: .78rem; color: rgba(255,255,255,.7); position: relative; z-index: 1; }
+    .about-hi { display: flex; flex-direction: column; gap: 16px; }
+    .ahi { display: flex; align-items: center; gap: 14px; padding: 16px 20px; background: var(--lightbg); border-radius: 12px; border: 1px solid var(--light); transition: transform .2s, box-shadow .2s; }
+    .ahi:hover { transform: translateX(5px); box-shadow: 0 4px 16px rgba(30,58,95,.1); }
+    .ahi-icon { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+    .ahi-title { font-size: .9rem; font-weight: 600; color: var(--navy); }
+    .ahi-desc { font-size: .79rem; color: var(--muted); }
+
+    /* MENU */
+    #menu { background: var(--lightbg); }
+    .menu-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .tab-btn {
+      padding: 9px 20px; border-radius: 50px; font-size: .82rem; font-weight: 600;
+      border: 1.5px solid var(--light); background: var(--white); color: var(--muted);
+      cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s;
+    }
+    .tab-btn.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .tab-btn:hover:not(.active) { border-color: var(--navy); color: var(--navy); }
+    .menu-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .mc {
+      background: var(--white); border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--light);
+      transition: transform .3s, box-shadow .3s;
+      position: relative;
+    }
+    .mc:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(30,58,95,.12); }
+    .mc-img {
+      height: 185px; position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; font-size: 4rem;
+    }
+    .mc-img::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,.4) 100%); }
+    .mc-bg1 { background: linear-gradient(135deg, #0d1f35, #1E3A5F); }
+    .mc-bg2 { background: linear-gradient(135deg, #1a1200, #3d2d00); }
+    .mc-bg3 { background: linear-gradient(135deg, #0d2010, #1a3d20); }
+    .mc-bg4 { background: linear-gradient(135deg, #1a0a20, #3d1a50); }
+    .mc-bg5 { background: linear-gradient(135deg, #1a1010, #4d1a00); }
+    .mc-badge { position:absolute; top:12px; right:12px; z-index:2; background:var(--grad-gold); color:var(--navy3); font-size:.62rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:4px; }
+    .mc-body { padding: 18px 20px 22px; }
+    .mc-cat { font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .mc-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 700; color: var(--navy); margin-bottom: 6px; letter-spacing: -.2px; }
+    .mc-desc { font-size: .8rem; color: var(--muted); line-height: 1.65; margin-bottom: 14px; }
+    .mc-foot { display: flex; justify-content: space-between; align-items: center; }
+    .mc-order { background: var(--navy); color: #fff; border: none; cursor: pointer; padding: 7px 16px; border-radius: 6px; font-size: .74rem; font-weight: 600; font-family: 'DM Sans', sans-serif; transition: background .2s, transform .2s; }
+    .mc-order:hover { background: var(--gold); color: var(--navy3); transform: scale(1.03); }
+
+    /* KEUNGGULAN */
+    #keunggulan { background: var(--navy); position: relative; overflow: hidden; }
+    #keunggulan::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 90% 10%, rgba(212,160,23,.1), transparent 50%), radial-gradient(ellipse at 5% 90%, rgba(212,160,23,.06), transparent 50%); pointer-events:none; }
+    #keunggulan .eyebrow { color: var(--gold); }
+    #keunggulan .eyebrow::before { background: var(--gold); }
+    #keunggulan .sec-title { color: #fff; }
+    .keung-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+    .kc {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 16px; padding: 28px 22px;
+      backdrop-filter: blur(10px);
+      transition: background .3s, border-color .3s, transform .3s;
+    }
+    .kc:hover { background: rgba(212,160,23,.1); border-color: rgba(212,160,23,.25); transform: translateY(-4px); }
+    .kc-num { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: rgba(212,160,23,.2); line-height: 1; margin-bottom: 12px; }
+    .kc-title { font-size: .92rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
+    .kc-desc { font-size: .78rem; color: rgba(255,255,255,.45); line-height: 1.6; }
+    .kc-check { font-size: 1rem; margin-bottom: 12px; }
+
+    /* TESTIMONI */
+    #testimoni { background: var(--white); }
+    .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 22px; }
+    .tc {
+      background: var(--lightbg); border-radius: 18px; padding: 32px 28px;
+      border: 1px solid var(--light); position: relative; overflow: hidden;
+      transition: transform .3s, box-shadow .3s;
+    }
+    .tc::before { content:'"'; position:absolute; top:-20px; right:20px; font-family:'Cormorant Garamond',serif; font-size:9rem; color:rgba(30,58,95,.06); line-height:1; pointer-events:none; }
+    .tc:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(30,58,95,.1); }
+    .tc-stars { font-size:.88rem; color:var(--gold); margin-bottom:14px; letter-spacing:2px; }
+    .tc-text { font-size:.9rem; line-height:1.8; color:var(--muted); font-style:italic; margin-bottom:22px; }
+    .tc-author { display:flex; align-items:center; gap:12px; }
+    .tc-avatar { width:42px; height:42px; border-radius:50%; background:var(--navy); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--gold); font-size:1rem; font-family:'Cormorant Garamond',serif; border:2px solid rgba(212,160,23,.2); }
+    .tc-name { font-weight:600; font-size:.88rem; color:var(--navy); }
+    .tc-role { font-size:.74rem; color:var(--muted); }
+    .tc-badge { position:absolute; top:20px; right:20px; background:var(--grad-gold); color:var(--navy3); font-size:.6rem; font-weight:700; padding:3px 9px; border-radius:4px; letter-spacing:.06em; text-transform:uppercase; }
+
+    /* GALERI */
+    #galeri { background: var(--lightbg); }
+    .galeri-masonry { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .gi { border-radius: 14px; overflow: hidden; position: relative; cursor: pointer; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 3rem; transition: transform .3s; border: 1px solid var(--light); }
+    .gi:hover { transform: scale(1.02); }
+    .gi:hover .gi-ov { opacity: 1; }
+    .gi.tall { grid-row: span 2; }
+    .gi.wide { grid-column: span 2; }
+    .gi-ov { position:absolute; inset:0; background:linear-gradient(to top, rgba(14,29,50,.8) 0%, transparent 60%); opacity:0; transition:opacity .3s; display:flex; align-items:flex-end; padding:16px; }
+    .gi-lbl { font-size:.8rem; font-weight:600; color:#fff; letter-spacing:.04em; }
+    .gi-h1 { height: 180px; background: linear-gradient(135deg, #0d1f35, #1E3A5F); }
+    .gi-h2 { height: 180px; background: linear-gradient(135deg, #1a1200, #3d2d00); }
+    .gi-h3 { height: 180px; background: linear-gradient(135deg, #0d1a0a, #1a3d20); }
+    .gi-h4 { height: 380px; background: linear-gradient(135deg, #0a0d1a, #1E3A5F); }
+    .gi-h5 { height: 180px; background: linear-gradient(135deg, #1a1010, #4d1a00); }
+
+    /* RESERVASI */
+    #reservasi { background: var(--white); }
+    .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7vw; align-items: start; }
+    .fg { margin-bottom: 18px; }
+    .fl { font-size: .78rem; font-weight: 600; color: var(--navy); margin-bottom: 7px; display: block; letter-spacing: .04em; text-transform: uppercase; }
+    .fi { width: 100%; padding: 13px 16px; border-radius: 10px; border: 1.5px solid var(--light); background: var(--lightbg); font-size: .88rem; font-family: 'DM Sans', sans-serif; color: var(--dark); outline: none; transition: border-color .2s, box-shadow .2s; }
+    .fi:focus { border-color: var(--navy); box-shadow: 0 0 0 3px rgba(30,58,95,.08); background: var(--white); }
+    .fr { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn-submit { width: 100%; background: var(--navy); color: #fff; border: none; cursor: pointer; padding: 15px; border-radius: 10px; font-size: .9rem; font-weight: 700; font-family: 'DM Sans', sans-serif; box-shadow: 0 8px 24px rgba(30,58,95,.25); transition: transform .2s, box-shadow .2s; margin-top: 6px; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(30,58,95,.35); background: var(--navy2); }
+    .res-info { display: flex; flex-direction: column; gap: 16px; }
+    .ric { background: var(--lightbg); border-radius: 14px; padding: 20px 22px; border: 1px solid var(--light); display: flex; gap: 14px; align-items: flex-start; transition: transform .2s; }
+    .ric:hover { transform: translateX(4px); }
+    .ri-icon { width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: .95rem; }
+    .ri-title { font-size: .86rem; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .ri-val { font-size: .81rem; color: var(--muted); line-height: 1.6; }
+    .btn-wa-big { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25d366; color: #fff; padding: 15px; border-radius: 12px; font-size: .9rem; font-weight: 700; text-decoration: none; box-shadow: 0 8px 24px rgba(37,211,102,.3); transition: transform .2s, box-shadow .2s; }
+    .btn-wa-big:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(37,211,102,.4); }
+
+    /* LOKASI */
+    #lokasi { background: var(--lightbg); }
+    .lok-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5vw; align-items: start; }
+    .map-wrap { border-radius: 18px; overflow: hidden; box-shadow: 0 10px 40px rgba(30,58,95,.12); height: 380px; border: 1px solid var(--light); }
+    .map-wrap iframe { width: 100%; height: 100%; border: none; }
+    .lok-cards { display: flex; flex-direction: column; gap: 13px; }
+    .lc { background: var(--white); border-radius: 14px; padding: 18px 20px; border: 1px solid var(--light); display: flex; gap: 13px; align-items: flex-start; transition: transform .2s, box-shadow .2s; }
+    .lc:hover { transform: translateX(5px); box-shadow: 0 4px 20px rgba(30,58,95,.08); }
+    .lci { width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: .9rem; }
+    .lct { font-size: .86rem; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .lcv { font-size: .8rem; color: var(--muted); line-height: 1.6; }
+    .btn-maps { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--navy); color: #fff; padding: 14px; border-radius: 12px; font-size: .86rem; font-weight: 700; text-decoration: none; box-shadow: 0 6px 20px rgba(30,58,95,.25); transition: transform .2s; }
+    .btn-maps:hover { transform: translateY(-2px); background: var(--navy2); }
+
+    /* FOOTER */
+    footer { background: var(--navy3); padding: 56px 6vw 28px; }
+    .ft-top { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 5vw; padding-bottom: 44px; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .ft-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; letter-spacing: .5px; }
+    .ft-logo-badge { width: 28px; height: 28px; border-radius: 5px; background: var(--grad-gold); display: flex; align-items: center; justify-content: center; font-size: .62rem; font-weight: 700; color: var(--navy3); font-family: 'DM Sans', sans-serif; }
+    .ft-desc { font-size: .82rem; color: rgba(255,255,255,.38); line-height: 1.75; max-width: 280px; }
+    .ft-nt { font-size: .68rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: rgba(255,255,255,.28); margin-bottom: 14px; }
+    .ft-links { display: flex; flex-direction: column; gap: 9px; }
+    .ft-links a { font-size: .82rem; color: rgba(255,255,255,.45); text-decoration: none; transition: color .2s; }
+    .ft-links a:hover { color: var(--gold2); }
+    .ft-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding-top: 20px; }
+    .ft-copy { font-size: .74rem; color: rgba(255,255,255,.2); }
+
+    /* FAB & BTT */
+    .fab { position:fixed; bottom:28px; right:24px; z-index:400; width:56px; height:56px; border-radius:14px; background:#25d366; color:#fff; text-decoration:none; display:flex; align-items:center; justify-content:center; font-size:1.5rem; box-shadow:0 6px 24px rgba(37,211,102,.4); transition:transform .2s; animation:fabp 3s ease-in-out infinite; }
+    .fab:hover { transform:scale(1.1); }
+    @keyframes fabp { 0%,100%{box-shadow:0 6px 24px rgba(37,211,102,.4),0 0 0 0 rgba(37,211,102,.2);} 50%{box-shadow:0 6px 24px rgba(37,211,102,.4),0 0 0 10px rgba(37,211,102,0);} }
+    .btt { position:fixed; bottom:92px; right:24px; z-index:400; width:42px; height:42px; border-radius:10px; background:rgba(14,29,50,.9); backdrop-filter:blur(8px); color:#fff; border:1px solid rgba(212,160,23,.2); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:.9rem; opacity:0; pointer-events:none; transition:opacity .3s,transform .2s; }
+    .btt.show { opacity:1; pointer-events:all; }
+    .btt:hover { transform:translateY(-2px); background:var(--navy); }
+
+    /* REVEAL */
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .65s ease,transform .65s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .nav-links,.nav-cta{display:none;} .burger{display:flex;}
+      .about-grid,.res-grid,.lok-grid{grid-template-columns:1fr;}
+      .menu-grid{grid-template-columns:1fr 1fr;} .keung-grid{grid-template-columns:1fr 1fr;}
+      .testi-grid{grid-template-columns:1fr;} .ft-top{grid-template-columns:1fr 1fr;}
+      .stats-bar{flex-wrap:wrap;} .si{flex:1 0 50%; border-bottom:1px solid rgba(255,255,255,.06);}
+    }
+    @media(max-width:560px){
+      .menu-grid{grid-template-columns:1fr;} .keung-grid{grid-template-columns:1fr 1fr;}
+      .galeri-masonry{grid-template-columns:1fr 1fr;} .ft-top{grid-template-columns:1fr;}
+      .hero-btns{flex-direction:column;align-items:center;} .fr{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="l-num">1818</div>
+  <div class="l-text">Dapur 1818 · Fine Family Dining</div>
+  <div class="l-bar"><div class="l-fill"></div></div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo"><div class="nav-logo-badge">D18</div>Dapur 1818</a>
+  <ul class="nav-links">
+    <li><a href="#about">Tentang</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#testimoni">Ulasan</a></li>
+    <li><a href="#galeri">Galeri</a></li>
+    <li><a href="#lokasi">Lokasi</a></li>
+  </ul>
+  <a href="https://wa.me/6281290565618?text=Halo%20Dapur%201818%2C%20aku%20mau%20pesan!" class="nav-cta" target="_blank">Pesan Sekarang</a>
+  <button class="burger" id="burgerBtn"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mm" id="mobileMenu">
+  <a href="#about" class="ml">Tentang</a>
+  <a href="#menu" class="ml">Menu</a>
+  <a href="#keunggulan" class="ml">Keunggulan</a>
+  <a href="#testimoni" class="ml">Ulasan</a>
+  <a href="#galeri" class="ml">Galeri</a>
+  <a href="#reservasi" class="ml">Reservasi</a>
+  <a href="#lokasi" class="ml">Lokasi</a>
+  <a href="https://wa.me/6281290565618?text=Halo%20Dapur%201818!" class="mm-cta" target="_blank">Pesan via WhatsApp</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-deco hd1"></div>
+  <div class="hero-deco hd2"></div>
+  <div class="hero-deco hd3"></div>
+  <div class="hero-inner">
+    <div class="hero-badge"><div class="hbdot"></div>Buka Setiap Hari · Hingga Pukul 23.00</div>
+    <h1 class="hero-h1">
+      Dapur 1818,<br>
+      <span class="acc acc2">Tempat Makan Nyaman</span>
+      untuk Setiap Momen
+    </h1>
+    <div class="gold-line"></div>
+    <p class="hero-sub">Nikmati hidangan lezat, suasana bersih, dan pelayanan ramah yang membuat pelanggan selalu ingin kembali.</p>
+    <div class="hero-btns">
+      <a href="#menu" class="btn-gold">🍽️ Lihat Menu</a>
+      <a href="https://wa.me/6281290565618?text=Halo%20Dapur%201818%2C%20aku%20mau%20pesan!" class="btn-wa-hero" target="_blank">💬 Pesan via WhatsApp</a>
+      <a href="#lokasi" class="btn-glass-hero">📍 Lihat Lokasi</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="si"><div class="sn">5.0 ★</div><div class="sl2">Rating Sempurna</div></div>
+  <div class="si"><div class="sn" data-target="12">0</div><div class="sl2">Ulasan Positif</div></div>
+  <div class="si"><div class="sn" data-target="200">0</div><div class="sl2">Pelanggan Puas</div></div>
+  <div class="si"><div class="sn">Setiap Hari</div><div class="sl2">Pelayanan</div></div>
+</div>
+
+<!-- TENTANG -->
+<section id="about" class="sec">
+  <div class="about-grid">
+    <div class="about-vis reveal">
+      <div class="about-big">Kualitas,<br>Kebersihan,<br>&amp; <em>Kenyamanan.</em></div>
+      <div class="about-rating">
+        <div style="font-size:1.2rem;">⭐⭐⭐⭐⭐</div>
+        <div><div class="rnum">5.0 / 5</div><div class="rlbl">Rating sempurna dari pelanggan</div></div>
+      </div>
+      <div class="about-tag">🍽️ &nbsp;Family Dining · Cileunyi Wetan</div>
+    </div>
+    <div>
+      <div class="eyebrow reveal">Tentang Kami</div>
+      <h2 class="sec-title reveal">Dapur <span class="acc">1818</span></h2>
+      <p class="sec-sub reveal">Dapur 1818 hadir sebagai tempat makan keluarga modern di Cileunyi Wetan, Kabupaten Bandung. Kami mengutamakan kebersihan, kenyamanan, dan cita rasa yang konsisten — menjadikan setiap kunjungan pengalaman yang menyenangkan untuk seluruh keluarga.</p>
+      <div class="about-hi">
+        <div class="ahi reveal"><div class="ahi-icon">⭐</div><div><div class="ahi-title">Rating Sempurna 5,0</div><div class="ahi-desc">Kepercayaan pelanggan adalah prioritas utama kami</div></div></div>
+        <div class="ahi reveal"><div class="ahi-icon">✨</div><div><div class="ahi-title">Tempat Bersih & Nyaman</div><div class="ahi-desc">Suasana modern dan nyaman untuk semua kalangan</div></div></div>
+        <div class="ahi reveal"><div class="ahi-icon">💰</div><div><div class="ahi-title">Harga Terjangkau</div><div class="ahi-desc">Kualitas premium dengan harga yang bersahabat</div></div></div>
+        <div class="ahi reveal"><div class="ahi-icon">🛵</div><div><div class="ahi-title">Pesan Antar Tersedia</div><div class="ahi-desc">Makan di tempat, bawa pulang, atau pesan antar</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section id="menu" class="sec">
+  <div class="eyebrow reveal">Menu Kami</div>
+  <h2 class="sec-title reveal">Pilihan <span class="acc">Hidangan</span></h2>
+  <p class="sec-sub reveal">Setiap hidangan disajikan dengan bahan pilihan dan dimasak dengan penuh perhatian.</p>
+  <div class="menu-tabs reveal" id="menuTabs">
+    <button class="tab-btn active" data-cat="all">Semua</button>
+    <button class="tab-btn" data-cat="favorit">Menu Favorit</button>
+    <button class="tab-btn" data-cat="utama">Makanan Utama</button>
+    <button class="tab-btn" data-cat="paket">Paket Keluarga</button>
+    <button class="tab-btn" data-cat="minuman">Minuman</button>
+    <button class="tab-btn" data-cat="cemilan">Cemilan</button>
+  </div>
+  <div class="menu-grid" id="menuGrid">
+    <div class="mc reveal" data-cat="favorit">
+      <div class="mc-img mc-bg1">🍛<div class="mc-badge">Best Seller</div></div>
+      <div class="mc-body"><div class="mc-cat">Menu Favorit</div><div class="mc-name">Nasi Spesial 1818</div><p class="mc-desc">Nasi dengan lauk pilihan andalan Dapur 1818 yang selalu habis lebih awal.</p><div class="mc-foot"><span style="font-size:.78rem;color:var(--muted);">Pesan via WA</span><button class="mc-order" onclick="pesan('Nasi Spesial 1818')">Pesan</button></div></div>
+    </div>
+    <div class="mc reveal" data-cat="utama">
+      <div class="mc-img mc-bg2">🍗</div>
+      <div class="mc-body"><div class="mc-cat">Makanan Utama</div><div class="mc-name">Ayam Bakar Madu</div><p class="mc-desc">Ayam pilihan dibakar dengan marinasi madu dan rempah, menghasilkan rasa yang sempurna.</p><div class="mc-foot"><span style="font-size:.78rem;color:var(--muted);">Pesan via WA</span><button class="mc-order" onclick="pesan('Ayam Bakar Madu')">Pesan</button></div></div>
+    </div>
+    <div class="mc reveal" data-cat="utama">
+      <div class="mc-img mc-bg5">🥩<div class="mc-badge">New</div></div>
+      <div class="mc-body"><div class="mc-cat">Makanan Utama</div><div class="mc-name">Daging Goreng Krispi</div><p class="mc-desc">Daging sapi pilihan digoreng krispi dengan bumbu rahasia yang menggugah selera.</p><div class="mc-foot"><span style="font-size:.78rem;color:var(--muted);">Pesan via WA</span><button class="mc-order" onclick="pesan('Daging Goreng Krispi')">Pesan</button></div></div>
+    </div>
+    <div class="mc reveal" data-cat="paket">
+      <div class="mc-img mc-bg1">👨‍👩‍👧‍👦<div class="mc-badge">Hemat</div></div>
+      <div class="mc-body"><div class="mc-cat">Paket Keluarga</div><div class="mc-name">Paket Keluarga 4 Orang</div><p class="mc-desc">Paket komplit untuk 4 orang — nasi, lauk pilihan, sayur, minuman, dan cemilan.</p><div class="mc-foot"><span style="font-size:.78rem;color:var(--muted);">Pesan via WA</span><button class="mc-order" onclick="pesan('Paket Keluarga 4 Orang')">Pesan</button></div></div>
+    </div>
+    <div class="mc reveal" data-cat="minuman">
+      <div class="mc-img mc-bg3">🥤</div>
+      <div class="mc-body"><div class="mc-cat">Minuman</div><div class="mc-name">Es Teh Spesial</div><p class="mc-desc">Teh premium diseduh dengan sempurna, disajikan dingin menyegarkan.</p><div class="mc-foot"><span style="font-size:.78rem;color:var(--muted);">Pesan via WA</span><button class="mc-order" onclick="pesan('Es Teh Spesial')">Pesan</button></div></div>
+    </div>
+    <div class="mc reveal" data-cat="cemilan">
+      <div class="mc-img mc-bg4">🍟</div>
+      <div class="mc-body"><div class="mc-cat">Cemilan</div><div class="mc-name">Kentang Goreng Spesial</div><p class="mc-desc">Kentang goreng renyah dengan saus spesial Dapur 1818. Cocok untuk semua usia.</p><div class="mc-foot"><span style="font-size:.78rem;color:var(--muted);">Pesan via WA</span><button class="mc-order" onclick="pesan('Kentang Goreng Spesial')">Pesan</button></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- KEUNGGULAN -->
+<section id="keunggulan" class="sec">
+  <div class="eyebrow reveal">Keunggulan</div>
+  <h2 class="sec-title reveal" style="color:#fff;">Mengapa Memilih <span style="color:var(--gold);font-style:italic;">Dapur 1818?</span></h2>
+  <p class="sec-sub reveal" style="color:rgba(255,255,255,.4);">Kami berkomitmen memberikan pengalaman makan yang berkelas di setiap kunjungan.</p>
+  <div class="keung-grid">
+    <div class="kc reveal"><div class="kc-check">✨</div><div class="kc-num">01</div><div class="kc-title">Tempat Bersih & Nyaman</div><p class="kc-desc">Lingkungan yang selalu terjaga kebersihan dan kerapiannya</p></div>
+    <div class="kc reveal"><div class="kc-check">👨‍👩‍👧‍👦</div><div class="kc-num">02</div><div class="kc-title">Cocok untuk Keluarga</div><p class="kc-desc">Suasana yang ramah dan nyaman untuk semua usia</p></div>
+    <div class="kc reveal"><div class="kc-check">😊</div><div class="kc-num">03</div><div class="kc-title">Pelayanan Ramah</div><p class="kc-desc">Tim kami siap melayani dengan hangat dan profesional</p></div>
+    <div class="kc reveal"><div class="kc-check">💰</div><div class="kc-num">04</div><div class="kc-title">Harga Terjangkau</div><p class="kc-desc">Kualitas premium dengan harga yang sangat bersahabat</p></div>
+    <div class="kc reveal"><div class="kc-check">⭐</div><div class="kc-num">05</div><div class="kc-title">Rating 5,0 Sempurna</div><p class="kc-desc">Dipercaya dan direkomendasikan oleh seluruh pelanggan</p></div>
+    <div class="kc reveal"><div class="kc-check">🛵</div><div class="kc-num">06</div><div class="kc-title">Pesan Antar Tersedia</div><p class="kc-desc">Diantar langsung ke pintu rumahmu dengan cepat</p></div>
+    <div class="kc reveal"><div class="kc-check">📍</div><div class="kc-num">07</div><div class="kc-title">Lokasi Strategis</div><p class="kc-desc">Mudah dijangkau di Cileunyi Wetan, Kabupaten Bandung</p></div>
+    <div class="kc reveal"><div class="kc-check">🍽️</div><div class="kc-num">08</div><div class="kc-title">Makanan Berkualitas</div><p class="kc-desc">Bahan segar dipilih setiap hari untuk rasa yang terbaik</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONI -->
+<section id="testimoni" class="sec">
+  <div class="eyebrow reveal">Ulasan Pelanggan</div>
+  <h2 class="sec-title reveal">Kata <span class="acc">Mereka</span></h2>
+  <p class="sec-sub reveal">Rating sempurna 5,0 dari 12+ ulasan nyata pelanggan setia kami.</p>
+  <div class="testi-grid">
+    <div class="tc reveal">
+      <div class="tc-badge">Verified</div>
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"Makanannya enak banget, harga terjangkau, dan tempatnya sangat bersih. Pelayanannya juga cepat dan ramah. Pasti balik lagi!"</p>
+      <div class="tc-author"><div class="tc-avatar">A</div><div><div class="tc-name">Arini Putri</div><div class="tc-role">Pelanggan Setia</div></div></div>
+    </div>
+    <div class="tc reveal">
+      <div class="tc-badge">Verified</div>
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"Nyaman banget untuk membawa anak-anak ke sini. Suasananya bersih dan modern, anak-anak betah, orang tua pun tenang."</p>
+      <div class="tc-author"><div class="tc-avatar">B</div><div><div class="tc-name">Budi Santoso</div><div class="tc-role">Ayah 2 Anak</div></div></div>
+    </div>
+    <div class="tc reveal">
+      <div class="tc-badge">Verified</div>
+      <div class="tc-stars">★★★★★</div>
+      <p class="tc-text">"Pemiliknya sangat ramah dan makanannya benar-benar memuaskan. Sudah jadi tempat makan favorit keluarga kami setiap minggu."</p>
+      <div class="tc-author"><div class="tc-avatar">C</div><div><div class="tc-name">Citra Dewi</div><div class="tc-role">Pelanggan Rutin</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERI -->
+<section id="galeri" class="sec">
+  <div class="eyebrow reveal">Galeri</div>
+  <h2 class="sec-title reveal">Suasana <span class="acc">Dapur 1818</span></h2>
+  <p class="sec-sub reveal">Modern, bersih, dan nyaman — inilah Dapur 1818.</p>
+  <div class="galeri-masonry reveal">
+    <div class="gi gi-h1 wide">🍽️<div class="gi-ov"><span class="gi-lbl">Area Makan Modern</span></div></div>
+    <div class="gi gi-h2">🥘<div class="gi-ov"><span class="gi-lbl">Menu Unggulan</span></div></div>
+    <div class="gi gi-h4 tall" style="background:linear-gradient(135deg,#0a1220,#1E3A5F);">🍛<div class="gi-ov"><span class="gi-lbl">Hidangan Spesial</span></div></div>
+    <div class="gi gi-h3">🥤<div class="gi-ov"><span class="gi-lbl">Minuman Segar</span></div></div>
+    <div class="gi gi-h5">👨‍👩‍👧‍👦<div class="gi-ov"><span class="gi-lbl">Momen Keluarga</span></div></div>
+  </div>
+</section>
+
+<!-- RESERVASI -->
+<section id="reservasi" class="sec">
+  <div class="eyebrow reveal">Reservasi</div>
+  <h2 class="sec-title reveal">Pesan <span class="acc">Meja Sekarang</span></h2>
+  <p class="sec-sub reveal">Isi formulir di bawah untuk reservasi, atau langsung hubungi kami via WhatsApp.</p>
+  <div class="res-grid">
+    <form class="reveal" onsubmit="submitRes(event)">
+      <div class="fg"><label class="fl">Nama Lengkap</label><input class="fi" type="text" placeholder="Nama kamu" required/></div>
+      <div class="fg"><label class="fl">Nomor WhatsApp</label><input class="fi" type="tel" placeholder="08xxxxxxxxxx" required/></div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Jumlah Orang</label><input class="fi" type="number" placeholder="2" min="1" required/></div>
+        <div class="fg"><label class="fl">Tanggal</label><input class="fi" type="date" required/></div>
+      </div>
+      <div class="fg"><label class="fl">Catatan Tambahan</label><textarea class="fi" rows="3" placeholder="Misal: ada acara ulang tahun, butuh area khusus, dll" style="resize:none;"></textarea></div>
+      <button type="submit" class="btn-submit">📋 Kirim Reservasi via WhatsApp</button>
+    </form>
+    <div class="res-info reveal">
+      <div class="ric"><div class="ri-icon">🕐</div><div><div class="ri-title">Jam Operasional</div><div class="ri-val">Setiap Hari<br>Buka hingga Pukul 23.00 WIB</div></div></div>
+      <div class="ric"><div class="ri-icon">🍽️</div><div><div class="ri-title">Layanan</div><div class="ri-val">Makan di tempat · Bawa pulang<br>Pesan antar tersedia</div></div></div>
+      <div class="ric"><div class="ri-icon">📞</div><div><div class="ri-title">WhatsApp</div><div class="ri-val">0812-9056-5618</div></div></div>
+      <div class="ric"><div class="ri-icon">📍</div><div><div class="ri-title">Alamat</div><div class="ri-val">Jl. Panyawungan Terusan, Kp. Panyawungan<br>Cileunyi Wetan, Kab. Bandung</div></div></div>
+      <a href="https://wa.me/6281290565618?text=Halo%20Dapur%201818%2C%20aku%20mau%20reservasi!" class="btn-wa-big" target="_blank">💬 Reservasi via WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- LOKASI -->
+<section id="lokasi" class="sec">
+  <div class="eyebrow reveal">Lokasi</div>
+  <h2 class="sec-title reveal">Temukan <span class="acc">Kami</span></h2>
+  <p class="sec-sub reveal">Berlokasi strategis di Cileunyi Wetan, mudah dijangkau dari berbagai arah.</p>
+  <div class="lok-grid">
+    <div class="map-wrap reveal">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.4!2d107.7380!3d-6.9510!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTcnMDMuNiJTIDEwN8KwNDQnMTYuOCJF!5e0!3m2!1sid!2sid!4v1" allowfullscreen loading="lazy"></iframe>
+    </div>
+    <div class="lok-cards reveal">
+      <div class="lc"><div class="lci">📍</div><div><div class="lct">Alamat</div><div class="lcv">Jl. Panyawungan Terusan, Kampung Panyawungan, Cileunyi Wetan, Kabupaten Bandung, Jawa Barat</div></div></div>
+      <div class="lc"><div class="lci">🕐</div><div><div class="lct">Jam Operasional</div><div class="lcv">Setiap Hari · Hingga Pukul 23.00 WIB</div></div></div>
+      <div class="lc"><div class="lci">📞</div><div><div class="lct">WhatsApp</div><div class="lcv"><a href="https://wa.me/6281290565618" target="_blank" style="color:var(--navy);font-weight:600;text-decoration:none;">0812-9056-5618</a></div></div></div>
+      <div class="lc"><div class="lci">🍽️</div><div><div class="lct">Layanan</div><div class="lcv">Makan di tempat · Bawa pulang · Pesan antar</div></div></div>
+      <a href="https://maps.google.com/?q=Jl+Panyawungan+Terusan+Cileunyi+Wetan+Kabupaten+Bandung" target="_blank" class="btn-maps">🗺️ Buka di Google Maps</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-top">
+    <div>
+      <div class="ft-logo"><div class="ft-logo-badge">D18</div>Dapur 1818</div>
+      <p class="ft-desc">Tempat makan keluarga modern di Cileunyi Wetan, Kabupaten Bandung. Mengutamakan kualitas, kebersihan, dan kenyamanan di setiap kunjungan.</p>
+    </div>
+    <div>
+      <div class="ft-nt">Navigasi</div>
+      <div class="ft-links">
+        <a href="#about">Tentang Kami</a>
+        <a href="#menu">Menu</a>
+        <a href="#keunggulan">Keunggulan</a>
+        <a href="#testimoni">Ulasan</a>
+        <a href="#galeri">Galeri</a>
+        <a href="#reservasi">Reservasi</a>
+        <a href="#lokasi">Lokasi</a>
+      </div>
+    </div>
+    <div>
+      <div class="ft-nt">Kontak</div>
+      <div class="ft-links">
+        <a href="https://wa.me/6281290565618" target="_blank">💬 0812-9056-5618</a>
+        <a href="#">📍 Cileunyi Wetan, Kab. Bandung</a>
+        <a href="#">🕐 Buka hingga 23.00 WIB</a>
+        <a href="#">⭐ Rating 5,0 / 5</a>
+      </div>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <div class="ft-copy">© 2025 Dapur 1818. All rights reserved.</div>
+    <div class="ft-copy">Made with ❤️ by <a href="https://thanify-dev.netlify.app" target="_blank" style="color:var(--gold);text-decoration:none;">Thanify</a></div>
+  </div>
+</footer>
+
+<!-- FAB + BTT -->
+<a class="fab" href="https://wa.me/6281290565618?text=Halo%20Dapur%201818%2C%20aku%20mau%20pesan!" target="_blank">💬</a>
+<button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // Loader
+  window.addEventListener('load', () => setTimeout(() => document.getElementById('loader').classList.add('hide'), 2000));
+
+  // Burger
+  const burger = document.getElementById('burgerBtn');
+  const mm = document.getElementById('mobileMenu');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open'); mm.classList.toggle('open');
+    document.body.style.overflow = mm.classList.contains('open') ? 'hidden' : '';
+  });
+  document.querySelectorAll('.ml,.mm-cta').forEach(l => l.addEventListener('click', () => {
+    burger.classList.remove('open'); mm.classList.remove('open'); document.body.style.overflow = '';
+  }));
+
+  // Nav + btt
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
+    document.getElementById('btt').classList.toggle('show', window.scrollY > 400);
+  });
+
+  // Reveal
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); ro.unobserve(e.target); }});
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+  // Counter
+  function animCount(el, target, suffix='+') {
+    let n = 0; const dur = 2000, step = 16, inc = target / (dur / step);
+    const t = setInterval(() => {
+      n += inc; if(n >= target){ n = target; clearInterval(t); }
+      el.textContent = Math.floor(n) + suffix;
+    }, step);
+  }
+  const so = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        document.querySelectorAll('[data-target]').forEach(el => animCount(el, parseInt(el.dataset.target)));
+        so.disconnect();
+      }
+    });
+  }, { threshold: 0.5 });
+  const sb = document.querySelector('.stats-bar');
+  if(sb) so.observe(sb);
+
+  // Menu tabs
+  document.getElementById('menuTabs').addEventListener('click', e => {
+    if(!e.target.classList.contains('tab-btn')) return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    const cat = e.target.dataset.cat;
+    document.querySelectorAll('.mc').forEach(c => {
+      if(cat === 'all' || c.dataset.cat === cat){ c.style.display = ''; }
+      else { c.style.display = 'none'; }
+    });
+  });
+
+  // Order & reservasi
+  function pesan(item) {
+    window.open(`https://wa.me/6281290565618?text=Halo%20Dapur%201818%2C%20aku%20mau%20pesan%20${encodeURIComponent(item)}!`, '_blank');
+  }
+  function submitRes(e) {
+    e.preventDefault();
+    const f = e.target;
+    const nama = f.querySelector('input[type=text]').value;
+    const wa = f.querySelector('input[type=tel]').value;
+    const jml = f.querySelector('input[type=number]').value;
+    const tgl = f.querySelector('input[type=date]').value;
+    const note = f.querySelector('textarea').value;
+    const msg = encodeURIComponent(`Halo Dapur 1818! Saya ingin reservasi meja.\n\nNama: ${nama}\nWA: ${wa}\nJumlah: ${jml} orang\nTanggal: ${tgl}\nCatatan: ${note || '-'}`);
+    window.open(`https://wa.me/6281290565618?text=${msg}`, '_blank');
+  }
+</script>
+</body>
+</html>
